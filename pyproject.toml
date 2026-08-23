@@ -1,0 +1,56 @@
+[project]
+name = "lazy-args-resolve"
+version = "0.1.0"
+description = "Evaluate function arguments lazily"
+authors = [{ name = "Hwrn Aou", email = "hwrn.aou@sjtu.edu.cn" }]
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+requires-python = ">=3.12,<4.0"
+keywords = ["lazy", "resolve", "deferred", "argument"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: POSIX :: Linux",
+    "Environment :: Console",
+]
+
+[tool.poetry]
+packages = [{ include = "lazy_args", from = "src" }]
+
+[tool.pytest.ini_options]
+addopts = "--doctest-modules"
+testpaths = ["src/lazy_args", "tests"]
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pixi.workspace]
+channels = ["conda-forge"]
+platforms = ["linux-64"]
+
+[tool.pixi.pypi-dependencies]
+lazy-args-resolve = { path = ".", editable = true }
+
+[tool.pixi.feature.test.dependencies]
+pytest = "*"
+python = "3.14.*"
+
+[tool.pixi.environments]
+test = { features = ["test"] }
+publish = { features = ["publish"] }
+
+[tool.pixi.feature.test.tasks]
+test = "pytest"
+
+[tool.pixi.feature.publish.dependencies]
+python-build = ">=1.2"
+twine = ">=6"
+
+[tool.pixi.feature.publish.tasks]
+build = "python -m build"
+check = { cmd = "python -m twine check dist/*", depends-on = ["build"] }
